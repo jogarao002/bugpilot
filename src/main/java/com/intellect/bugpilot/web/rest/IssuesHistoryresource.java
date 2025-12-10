@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.intellect.bugpilot.service.IssuesHistoryService;
+import com.intellect.bugpilot.service.dto.IssueHistoryResponseDTO;
 import com.intellect.bugpilot.service.dto.IssuesHistoryRequestDTO;
 
 import jakarta.validation.Valid;
@@ -60,4 +61,10 @@ public class IssuesHistoryresource {
 			return ResponseEntity.notFound().build();
 		}
     }
+    
+    @GetMapping("/get_issue_history_by/{issueId}")
+    public ResponseEntity<List<IssueHistoryResponseDTO>> getIssueHistoryWithComments(@NotNull @PathVariable Long issueId) {
+    	return ResponseEntity.ok(issuesHistoryService.getHistoryByIssueId(issueId));
+    }
+    
 }

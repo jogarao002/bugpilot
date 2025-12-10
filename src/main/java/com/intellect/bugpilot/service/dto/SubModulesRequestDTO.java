@@ -18,6 +18,8 @@ public class SubModulesRequestDTO extends Auditable implements Serializable {
 
 	@NotNull
 	private Long moduleId;
+	
+	private String moduleName;
 
 	private ModuleAndSubModuleStatusEnum status;
 
@@ -28,6 +30,7 @@ public class SubModulesRequestDTO extends Auditable implements Serializable {
 		this.subModuleId = builder.subModuleId;
 		this.subModuleName = builder.subModuleName;
 		this.moduleId = builder.moduleId;
+		this.moduleName = builder.moduleName;
 		this.status = builder.status;
 	}
 
@@ -38,6 +41,7 @@ public class SubModulesRequestDTO extends Auditable implements Serializable {
 		private Long subModuleId;
 		private String subModuleName;
 		private Long moduleId;
+		private String moduleName;
 		private ModuleAndSubModuleStatusEnum status;
 
 		public SubModulesRequestDTOBuilder subModuleId(Long subModuleId) {
@@ -52,6 +56,11 @@ public class SubModulesRequestDTO extends Auditable implements Serializable {
 
 		public SubModulesRequestDTOBuilder moduleId(@NotNull Long moduleId) {
 			this.moduleId = moduleId;
+			return this;
+		}
+		
+		public SubModulesRequestDTOBuilder moduleName(String moduleName) {
+			this.moduleName = moduleName;
 			return this;
 		}
 
@@ -81,9 +90,13 @@ public class SubModulesRequestDTO extends Auditable implements Serializable {
 		return status;
 	}
 
+	public String getModuleName() {
+		return moduleName;
+	}
+
 	@Override
 	public String toString() {
 		return "SubModulesRequestDTO [subModuleId=" + subModuleId + ", subModuleName=" + subModuleName + ", moduleId="
-				+ moduleId + ", status=" + status + "]";
+				+ moduleId + ", moduleName=" + moduleName + ", status=" + status + "]";
 	}
 }

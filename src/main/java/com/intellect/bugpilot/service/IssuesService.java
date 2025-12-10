@@ -1,8 +1,7 @@
 package com.intellect.bugpilot.service;
 
-import java.util.List;
-
 import com.intellect.bugpilot.service.dto.IssuesRequestDTO;
+import com.intellect.bugpilot.service.dto.IssuesResponseDTO;
 
 public interface IssuesService {
 
@@ -12,6 +11,12 @@ public interface IssuesService {
 
 	IssuesRequestDTO getIssueById(Long issueId);
 
-	List<IssuesRequestDTO> getAllIssues();
+	IssuesResponseDTO getAllIssues();
+
+	IssuesResponseDTO getIssueByRaisedById(Long raisedBy);
+
+	IssuesResponseDTO getIssueByRaisedTo(Long raisedTo);
+
+	IssuesResponseDTO getIssueByAssignedTo(Long assignedTo);
 
 }

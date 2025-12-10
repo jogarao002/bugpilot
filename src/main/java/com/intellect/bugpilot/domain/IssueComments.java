@@ -1,7 +1,6 @@
 package com.intellect.bugpilot.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.intellect.bugpilot.audit.Auditable;
 
@@ -33,8 +32,6 @@ public class IssueComments extends Auditable implements Serializable {
 
 	private String commentText;
 
-	private Date createdAt;
-
 	public IssueComments() {
 
 	}
@@ -44,7 +41,6 @@ public class IssueComments extends Auditable implements Serializable {
 		this.issues = builder.issues;
 		this.users = builder.users;
 		this.commentText = builder.commentText;
-		this.createdAt = builder.createdAt;
 	}
 
 	public static class IssueCommentsBuilder extends Auditable implements Serializable {
@@ -58,8 +54,6 @@ public class IssueComments extends Auditable implements Serializable {
 		private Users users;
 
 		private String commentText;
-
-		private Date createdAt;
 
 		public IssueCommentsBuilder commentId(Long commentId) {
 			this.commentId = commentId;
@@ -78,11 +72,6 @@ public class IssueComments extends Auditable implements Serializable {
 
 		public IssueCommentsBuilder commentText(String commentText) {
 			this.commentText = commentText;
-			return this;
-		}
-
-		public IssueCommentsBuilder createdAt(Date createdAt) {
-			this.createdAt = createdAt;
 			return this;
 		}
 
@@ -108,14 +97,10 @@ public class IssueComments extends Auditable implements Serializable {
 		return commentText;
 	}
 
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
 	@Override
 	public String toString() {
 		return "IssueComments [commentId=" + commentId + ", issues=" + issues + ", users=" + users + ", commentText="
-				+ commentText + ", createdAt=" + createdAt + "]";
+				+ commentText + "]";
 	}
 
 }

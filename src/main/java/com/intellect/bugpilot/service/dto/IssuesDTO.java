@@ -19,10 +19,14 @@ public class IssuesDTO extends Auditable implements Serializable {
 	private ProjectsDTO projects;
 
 	private ModulesDTO modules;
+	
+	private SubModulesDTO subModules;
 
 	private String description;
 
 	private UsersDTO raisedBy;
+	
+	private UsersDTO raisedTo;
 
 	private UsersDTO assignedTo;
 
@@ -40,8 +44,10 @@ public class IssuesDTO extends Auditable implements Serializable {
 		this.issueName = builder.issueName;
 		this.projects = builder.projects;
 		this.modules = builder.modules;
+		this.subModules = builder.subModules;
 		this.description = builder.description;
 		this.raisedBy = builder.raisedBy;
+		this.raisedTo = builder.raisedTo;
 		this.assignedTo = builder.assignedTo;
 		this.assignedBy = builder.assignedBy;
 		this.priority = builder.priority;
@@ -60,10 +66,14 @@ public class IssuesDTO extends Auditable implements Serializable {
 		private ProjectsDTO projects;
 
 		private ModulesDTO modules;
+		
+		private SubModulesDTO subModules;
 
 		private String description;
 
 		private UsersDTO raisedBy;
+		
+		private UsersDTO raisedTo;
 
 		private UsersDTO assignedTo;
 
@@ -92,6 +102,11 @@ public class IssuesDTO extends Auditable implements Serializable {
 			this.modules = modules;
 			return this;
 		}
+		
+		public IssuesDTOBuilder subModules(SubModulesDTO subModules) {
+			this.subModules = subModules;
+			return this;
+		}
 
 		public IssuesDTOBuilder description(String description) {
 			this.description = description;
@@ -103,6 +118,11 @@ public class IssuesDTO extends Auditable implements Serializable {
 			return this;
 		}
 
+		public IssuesDTOBuilder raisedTo(UsersDTO raisedTo) {
+			this.raisedTo = raisedTo;
+			return this;
+		}
+		
 		public IssuesDTOBuilder assignedTo(UsersDTO assignedTo) {
 			this.assignedTo = assignedTo;
 			return this;
@@ -156,6 +176,10 @@ public class IssuesDTO extends Auditable implements Serializable {
 		return assignedTo;
 	}
 
+	public SubModulesDTO getSubModules() {
+		return subModules;
+	}
+
 	public UsersDTO getAssignedBy() {
 		return assignedBy;
 	}
@@ -168,10 +192,17 @@ public class IssuesDTO extends Auditable implements Serializable {
 		return status;
 	}
 
+	public UsersDTO getRaisedTo() {
+		return raisedTo;
+	}
+
 	@Override
 	public String toString() {
 		return "IssuesDTO [issueId=" + issueId + ", issueName=" + issueName + ", projects=" + projects + ", modules="
-				+ modules + ", description=" + description + ", raisedBy=" + raisedBy + ", assignedTo=" + assignedTo
-				+ ", assignedBy=" + assignedBy + ", priority=" + priority + ", status=" + status + "]";
+				+ modules + ", subModules=" + subModules + ", description=" + description + ", raisedBy=" + raisedBy
+				+ ", raisedTo=" + raisedTo + ", assignedTo=" + assignedTo + ", assignedBy=" + assignedBy + ", priority="
+				+ priority + ", status=" + status + "]";
 	}
+
+	
 }

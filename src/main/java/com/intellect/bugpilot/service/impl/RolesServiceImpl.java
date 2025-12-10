@@ -2,6 +2,8 @@ package com.intellect.bugpilot.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import com.intellect.bugpilot.domain.Roles;
 import com.intellect.bugpilot.exception.ResourceNotFoundException;
 import com.intellect.bugpilot.repository.RolesRepository;
 import com.intellect.bugpilot.service.RolesService;
+import com.intellect.bugpilot.service.dto.RoleEnum;
 import com.intellect.bugpilot.service.dto.RolesDTO;
 
 @Service
@@ -79,6 +82,12 @@ public class RolesServiceImpl implements RolesService {
 			});
 		}
 		return rolesDTOList;
+	}
+
+	@Override
+	public Map<String,Integer> findActiveRoles() {
+	    return rolesRepository.findByStatusAndRoleNameNot(true, RoleEnum.ADMIN).stream()
+	            .collect(Collectors.toMap(r -> r.getRoleName().name(), Roles::getRoleId));
 	}
 
 }

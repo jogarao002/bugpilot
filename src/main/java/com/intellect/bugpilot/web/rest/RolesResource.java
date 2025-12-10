@@ -64,11 +64,15 @@ public class RolesResource {
 	}
 	
 	@DeleteMapping("/delete/{roleId}")
-	public ResponseEntity<String> deleteRole(@NotNull @PathVariable Integer roleId) {
+	public ResponseEntity<Map<String, String>> deleteRole(@NotNull @PathVariable Integer roleId) {
 	    rolesService.delete(roleId); 
-	    return ResponseEntity.ok("Role with ID " + roleId + " has been successfully deleted.");
+	    return ResponseEntity.ok(Map.of("message", "Role deleted successfully"));
+
 	}
 	
-	
+	@GetMapping("/get_all_active_roles")
+	public ResponseEntity<Map<String,Integer> > findActiveRoles(){
+	    return ResponseEntity.ok(rolesService.findActiveRoles());
+	}
 
 }

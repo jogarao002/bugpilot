@@ -64,8 +64,22 @@ public class ModulesResource {
 
 	
 	@DeleteMapping("/delete/{moduleId}")
-	public ResponseEntity<String> deleteUser(@NotNull @PathVariable Long moduleId) {
-		modulesService.delete(moduleId); 
-	    return ResponseEntity.ok("User with ID " + moduleId + " has been successfully deleted.");
+	public ResponseEntity<Void> deleteUser(@NotNull @PathVariable Long moduleId) {
+		modulesService.delete(moduleId);  
+	    return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/get_all_modules")
+	public ResponseEntity<Map<String, Long>> getAllModules() {
+		return ResponseEntity.ok(modulesService.getAllModules());
+	}
+	
+	@GetMapping("/get_all_modules_by_project_id/{projectId}")
+	public ResponseEntity<Map<String, Long>> getAllModulesByProjectId(@NotNull @PathVariable Long projectId) {
+		return ResponseEntity.ok(modulesService.getAllModulesByProjectId(projectId));
+		
+	    
+	}
+	
+	
 }

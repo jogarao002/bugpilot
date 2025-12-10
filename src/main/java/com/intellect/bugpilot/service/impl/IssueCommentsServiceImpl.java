@@ -1,9 +1,6 @@
 package com.intellect.bugpilot.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,33 +14,22 @@ import com.intellect.bugpilot.exception.ResourceNotFoundException;
 import com.intellect.bugpilot.repository.IssueCommentsRespository;
 import com.intellect.bugpilot.service.IssueCommentsService;
 import com.intellect.bugpilot.service.dto.IssueCommentsRequestDTO;
-import com.intellect.bugpilot.service.dto.IssuesRequestDTO;
-import com.intellect.bugpilot.service.dto.UsersRequestDTO;
 
 @Service
-public class IssueCoomentsServiceImpl implements IssueCommentsService {
-	
-	@Autowired
-	private issuesServiceImpl issuesServiceImpl;
-	
-	@Autowired
-	private UsersServiceImpl usersServiceImpl;
+public class IssueCommentsServiceImpl implements IssueCommentsService {
 	
 	@Autowired
 	private IssueCommentsRespository issueCommentsRespository;
 
 	@Override
 	public IssueCommentsRequestDTO createIssueComment(IssueCommentsRequestDTO issueCommentsRequestDTO) {
-		IssuesRequestDTO issuesRequestDTO = issuesServiceImpl.getIssueById(issueCommentsRequestDTO.getIssueId());
-		
-		UsersRequestDTO usersRequestDTO = usersServiceImpl.findOne(issueCommentsRequestDTO.getUserId());
 		
 		Issues issues = new Issues.IssuesBuilder()
-							.issueId(issuesRequestDTO.getIssueId())
+							.issueId(issueCommentsRequestDTO.getIssueId())
 							.build();
 		
 		Users users = new Users.UsersBuilder()
-						.userId(usersRequestDTO.getUserId())
+						.userId(issueCommentsRequestDTO.getUserId())
 						.build();
 		
 		IssueComments issueComments = new IssueComments.IssueCommentsBuilder()
@@ -51,9 +37,6 @@ public class IssueCoomentsServiceImpl implements IssueCommentsService {
 										.issues(issues)
 										.users(users)
 										.commentText(issueCommentsRequestDTO.getCommentText())
-										.createdAt(Date.from(LocalDateTime.now()
-												.atZone(ZoneId.systemDefault())
-												.toInstant()))
 										.build();
 		
 		issueComments = issueCommentsRespository.save(issueComments);
@@ -63,7 +46,6 @@ public class IssueCoomentsServiceImpl implements IssueCommentsService {
 				.issueId(issueCommentsRequestDTO.getIssueId())
 				.userId(issueCommentsRequestDTO.getUserId())
 				.commentText(issueCommentsRequestDTO.getCommentText())
-				.createdAt(issueComments.getCreatedAt())
 				.build();
 				
 	}
@@ -79,7 +61,6 @@ public class IssueCoomentsServiceImpl implements IssueCommentsService {
 																		.issueId(issueComments.getIssues().getIssueId())
 																		.userId(issueComments.getUsers().getUserId())
 																		.commentText(issueComments.getCommentText())
-																		.createdAt(issueComments.getCreatedAt())
 																		.build();
 				issueCommentsRequestDTOList.add(issueCommentsRequestDTO);
 			});
@@ -97,7 +78,6 @@ public class IssueCoomentsServiceImpl implements IssueCommentsService {
 				.issueId(issueComments.getIssues().getIssueId())
 				.userId(issueComments.getUsers().getUserId())
 				.commentText(issueComments.getCommentText())
-				.createdAt(issueComments.getCreatedAt())
 				.build();
 	}
 

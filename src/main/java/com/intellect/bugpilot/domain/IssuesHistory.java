@@ -1,12 +1,10 @@
 package com.intellect.bugpilot.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.intellect.bugpilot.audit.Auditable;
 import com.intellect.bugpilot.service.dto.IssueStatusEnum;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,14 +36,6 @@ public class IssuesHistory extends Auditable implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private IssueStatusEnum oldStatus;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = true)
-	private IssueStatusEnum newStatus;
-
-	private String remarks;
-
-	private Date changedAt;
-
 	public IssuesHistory() {
 	}
 
@@ -54,9 +44,6 @@ public class IssuesHistory extends Auditable implements Serializable {
 		this.issues = builder.issues;
 		this.users = builder.users;
 		this.oldStatus = builder.oldStatus;
-		this.newStatus = builder.newStatus;
-		this.remarks = builder.remarks;
-		this.changedAt = builder.changedAt;
 	}
 
 	public static class IssuesHistoryBuilder extends Auditable implements Serializable {
@@ -71,11 +58,6 @@ public class IssuesHistory extends Auditable implements Serializable {
 
 		private IssueStatusEnum oldStatus;
 
-		private IssueStatusEnum newStatus;
-
-		private String remarks;
-
-		private Date changedAt;
 
 		public IssuesHistoryBuilder historyId(Long historyId) {
 			this.historyId = historyId;
@@ -97,20 +79,6 @@ public class IssuesHistory extends Auditable implements Serializable {
 			return this;
 		}
 
-		public IssuesHistoryBuilder newStatus(IssueStatusEnum newStatus) {
-			this.newStatus = newStatus;
-			return this;
-		}
-
-		public IssuesHistoryBuilder remarks(String remarks) {
-			this.remarks = remarks;
-			return this;
-		}
-
-		public IssuesHistoryBuilder changedAt(Date changedAt) {
-			this.changedAt = changedAt;
-			return this;
-		}
 
 		public IssuesHistory build() {
 			return new IssuesHistory(this);
@@ -134,22 +102,10 @@ public class IssuesHistory extends Auditable implements Serializable {
 		return oldStatus;
 	}
 
-	public IssueStatusEnum getNewStatus() {
-		return newStatus;
-	}
-
-	public String getRemarks() {
-		return remarks;
-	}
-
-	public Date getChangedAt() {
-		return changedAt;
-	}
-
 	@Override
 	public String toString() {
 		return "IssuesHistory [historyId=" + historyId + ", issues=" + issues + ", users=" + users + ", oldStatus="
-				+ oldStatus + ", newStatus=" + newStatus + ", remarks=" + remarks + ", changedAt=" + changedAt + "]";
+				+ oldStatus + "]";
 	}
-	
+
 }

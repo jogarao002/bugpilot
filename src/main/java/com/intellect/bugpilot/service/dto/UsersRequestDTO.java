@@ -23,6 +23,11 @@ public class UsersRequestDTO extends Auditable implements Serializable {
 
 	@NotNull
 	private Integer roleId;
+	
+	private String roleName;
+	
+	@NotBlank
+	private String email;
 
 	private UserStatusEnum status;
 	
@@ -35,6 +40,8 @@ public class UsersRequestDTO extends Auditable implements Serializable {
 		this.lastName = builder.lastName;
 		this.gender = builder.gender;
 		this.roleId = builder.roleId;
+		this.roleName = builder.roleName;
+		this.email = builder.email;
 		this.status = builder.status;
 	}
 
@@ -47,6 +54,8 @@ public class UsersRequestDTO extends Auditable implements Serializable {
 		private String lastName;
 		private GenderEnum gender;
 		private Integer roleId;
+		private String roleName;
+		private String email;
 		private UserStatusEnum status;
 
 		public UsersRequestDTOBuilder userId(Long userId) {
@@ -71,6 +80,16 @@ public class UsersRequestDTO extends Auditable implements Serializable {
 
 		public UsersRequestDTOBuilder roleId(@NotNull Integer roleId) {
 			this.roleId = roleId;
+			return this;
+		}
+		
+		public UsersRequestDTOBuilder roleName(String roleName) {
+			this.roleName = roleName;
+			return this;
+		}
+		
+		public UsersRequestDTOBuilder email(@NotBlank String email) {
+			this.email = email;
 			return this;
 		}
 
@@ -108,10 +127,21 @@ public class UsersRequestDTO extends Auditable implements Serializable {
 		return status;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
 	@Override
 	public String toString() {
-		return "UsersDTO [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", gender="
-				+ gender + ", roleId=" + roleId + ", status=" + status + "]";
+		return "UsersRequestDTO [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", gender="
+				+ gender + ", roleId=" + roleId + ", roleName=" + roleName + ", email=" + email + ", status=" + status
+				+ "]";
 	}
+
+	
 
 }

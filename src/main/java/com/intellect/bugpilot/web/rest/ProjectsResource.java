@@ -33,13 +33,13 @@ public class ProjectsResource {
 	@PostMapping("/create_project")
 	public ResponseEntity<ProjectsDTO> createProject(@Valid @RequestBody ProjectsDTO projectsDTO) {
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(projectService.createUser(projectsDTO));
+				.body(projectService.createProject(projectsDTO));
 		
 	}
 	
 	@PutMapping("/update_project")
     public ResponseEntity<ProjectsDTO> updateProject(@Valid @RequestBody ProjectsDTO projectsDTO) {
-        ProjectsDTO updatedProject = projectService.createUser(projectsDTO);
+        ProjectsDTO updatedProject = projectService.createProject(projectsDTO);
         if (updatedProject != null) {
 	        return ResponseEntity.ok().body(updatedProject);
 	    } else {
@@ -65,9 +65,14 @@ public class ProjectsResource {
 	}
 	
 	@DeleteMapping("/delete/{projectId}")
-	public ResponseEntity<String> deleteProject(@NotNull @PathVariable Long projectId) {
+	public ResponseEntity<Map<String, String>> deleteProject(@NotNull @PathVariable Long projectId) {
 		projectService.delete(projectId);
-		return ResponseEntity.ok("Project with ID " + projectId + " has been successfully deleted.");
+		 return ResponseEntity.ok(Map.of("message", "Role deleted successfully"));
+	}
+	
+	@GetMapping("/get_all_Active_projects")
+	public ResponseEntity<Map<String, Long>> getAllActiveProjects() {
+		return ResponseEntity.ok(projectService.getAllActiveProjects());
 	}
 
 }

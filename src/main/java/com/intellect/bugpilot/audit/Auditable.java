@@ -34,6 +34,22 @@ public abstract class Auditable {
 	@Column(name = "updated_by")
 	@LastModifiedBy
 	protected Long updatedBy;
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
 	
 	
 

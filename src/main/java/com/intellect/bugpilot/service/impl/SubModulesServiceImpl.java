@@ -2,6 +2,8 @@ package com.intellect.bugpilot.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,10 +71,12 @@ public class SubModulesServiceImpl implements SubModulesService {
 		List<SubModules> subModulesList = subModulesRepository.findAll();
 		if(!CollectionUtils.isEmpty(subModulesList)) {
 			subModulesList.forEach(subModules -> {
+				ModulesRequestDTO modulesRequestDTO = modulesServiceImpl.findOne(subModules.getModules().getModuleId());
 				SubModulesRequestDTO subModulesRequestDTO = new SubModulesRequestDTO.SubModulesRequestDTOBuilder()
 																			.subModuleId(subModules.getSubModuleId())
 																			.subModuleName(subModules.getSubModuleName())
 																			.moduleId(subModules.getModules().getModuleId())
+																			.moduleName(modulesRequestDTO.getModuleName())
 																			.status(subModules.getStatus())
 																			.build();
 				subModulesRequestDTOList.add(subModulesRequestDTO);
@@ -94,6 +98,20 @@ public class SubModulesServiceImpl implements SubModulesService {
 				.status(ModuleAndSubModuleStatusEnum.INPROGRESS)
 				.build();
 		subModulesRepository.save(subModules);
+	}
+
+	@Override
+	public Map<String, Long> getAllSubModulesByModuleId(Long moduleId) {
+		Modules modules = new Modules.ModulesBuilder()
+							.moduleId(moduleId)
+							.build();
+		return subModulesRepository
+	            .findByModulesAndStatus(modules, ModuleAndSubModuleStatusEnum.COMPLETED)
+	            .stream()
+	            .collect(Collectors.toMap(
+	                    SubModules::getSubModuleName,
+	                    SubModules::getSubModuleId
+	            ));
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.intellect.bugpilot.service.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.intellect.bugpilot.audit.Auditable;
 
@@ -17,12 +16,6 @@ public class IssuesHistoryDTO extends Auditable implements Serializable {
 
 	private IssueStatusEnum oldStatus;
 
-	private IssueStatusEnum newStatus;
-
-	private String remarks;
-
-	private Date changedAt;
-
 	public IssuesHistoryDTO() {
 	}
 
@@ -31,9 +24,6 @@ public class IssuesHistoryDTO extends Auditable implements Serializable {
 		this.issues = builder.issues;
 		this.users = builder.users;
 		this.oldStatus = builder.oldStatus;
-		this.newStatus = builder.newStatus;
-		this.remarks = builder.remarks;
-		this.changedAt = builder.changedAt;
 	}
 
 	public static class IssuesHistoryDTOBuilder extends Auditable implements Serializable {
@@ -47,12 +37,6 @@ public class IssuesHistoryDTO extends Auditable implements Serializable {
 		private UsersDTO users;
 
 		private IssueStatusEnum oldStatus;
-
-		private IssueStatusEnum newStatus;
-
-		private String remarks;
-
-		private Date changedAt;
 
 		public IssuesHistoryDTOBuilder historyId(Long historyId) {
 			this.historyId = historyId;
@@ -71,21 +55,6 @@ public class IssuesHistoryDTO extends Auditable implements Serializable {
 
 		public IssuesHistoryDTOBuilder oldStatus(IssueStatusEnum oldStatus) {
 			this.oldStatus = oldStatus;
-			return this;
-		}
-
-		public IssuesHistoryDTOBuilder newStatus(IssueStatusEnum newStatus) {
-			this.newStatus = newStatus;
-			return this;
-		}
-
-		public IssuesHistoryDTOBuilder remarks(String remarks) {
-			this.remarks = remarks;
-			return this;
-		}
-
-		public IssuesHistoryDTOBuilder changedAt(Date changedAt) {
-			this.changedAt = changedAt;
 			return this;
 		}
 
@@ -111,24 +80,11 @@ public class IssuesHistoryDTO extends Auditable implements Serializable {
 		return oldStatus;
 	}
 
-	public IssueStatusEnum getNewStatus() {
-		return newStatus;
-	}
-
-	public String getRemarks() {
-		return remarks;
-	}
-
-	public Date getChangedAt() {
-		return changedAt;
-	}
-
 	@Override
 	public String toString() {
-		return "IssuesHistoryDTO [historyId=" + historyId + ", users=" + users + ", oldStatus=" + oldStatus
-				+ ", newStatus=" + newStatus + ", remarks=" + remarks + ", changedAt=" + changedAt + "]";
+		return "IssuesHistoryDTO [historyId=" + historyId + ", issues=" + issues + ", users=" + users + ", oldStatus="
+				+ oldStatus + "]";
 	}
 
-	
-	
+
 }

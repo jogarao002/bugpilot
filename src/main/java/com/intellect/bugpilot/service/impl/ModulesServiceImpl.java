@@ -2,6 +2,8 @@ package com.intellect.bugpilot.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,10 +78,12 @@ public class ModulesServiceImpl implements ModulesService {
 		List<Modules> modulesList = modulesRepository.findAll();
 		if(!CollectionUtils.isEmpty(modulesList)) {
 			modulesList.forEach(modules -> {
+				ProjectsDTO projectsDTO = projectsServiceImpl.findOne(modules.getProjects().getProjectId());
 				ModulesRequestDTO modulesRequestDTO = new ModulesRequestDTO.ModulesRequestDTOBuilder()
 																		.moduleId(modules.getModuleId())
 																		.moduleName(modules.getModuleName())
 																		.projectId(modules.getProjects().getProjectId())
+																		.projectName(projectsDTO.getProjectName())
 																		.hasSubModule(modules.getHasSubModule())
 																		.status(modules.getStatus())
 																		.build();
@@ -103,6 +107,22 @@ public class ModulesServiceImpl implements ModulesService {
 				.status(ModuleAndSubModuleStatusEnum.INPROGRESS)
 				.build();
 		modulesRepository.save(modules);
+	}
+
+	@Override
+	public Map<String, Long> getAllModules() {
+		return modulesRepository.findByHasSubModule(true).stream()
+				.filter(module -> ModuleAndSubModuleStatusEnum.COMPLETED.equals(module.getStatus()))
+				.collect(Collectors.toMap(Modules::getModuleName, Modules::getModuleId));
+	}
+
+	@Override
+	public Map<String, Long> getAllModulesByProjectId(Long projectId) {
+		Projects projects = new Projects.ProjectsBuilder()
+									.projectId(projectId)
+									.build();
+		return modulesRepository.findByProjectsAndStatus(projects, ModuleAndSubModuleStatusEnum.COMPLETED).stream()
+				.collect(Collectors.toMap(Modules::getModuleName, Modules::getModuleId));
 	}
 
 }

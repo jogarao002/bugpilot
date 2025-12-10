@@ -64,9 +64,19 @@ public class UsersResource {
 
 	
 	@DeleteMapping("/delete/{userId}")
-	public ResponseEntity<String> deleteUser(@NotNull @PathVariable Long userId) {
+	public ResponseEntity<Map<String, String>> deleteUser(@NotNull @PathVariable Long userId) {
 	    usersService.delete(userId); 
-	    return ResponseEntity.ok("User with ID " + userId + " has been successfully deleted.");
+	    return ResponseEntity.ok(Map.of("message", "Role deleted successfully"));
+	}
+	
+	@GetMapping("/get_all_Active_users")
+	public ResponseEntity<Map<String, Long>> getAllActiveUsers() {
+		return ResponseEntity.ok(usersService.getAllActiveUsers());
+	}
+	
+	@GetMapping("/get_all_Active_team_lead_users")
+	public ResponseEntity<Map<String, Long>> getAllActiveTeamLeadUsers() {
+		return ResponseEntity.ok(usersService.getAllActiveTeamLeadUsers());
 	}
 
 }

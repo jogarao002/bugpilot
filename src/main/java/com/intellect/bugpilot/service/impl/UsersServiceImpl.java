@@ -2,18 +2,25 @@ package com.intellect.bugpilot.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import com.intellect.bugpilot.domain.AccountInformation;
 import com.intellect.bugpilot.domain.Roles;
 import com.intellect.bugpilot.domain.Users;
 import com.intellect.bugpilot.exception.ResourceNotFoundException;
+import com.intellect.bugpilot.repository.LoginRepository;
+import com.intellect.bugpilot.repository.RolesRepository;
 import com.intellect.bugpilot.repository.UsersRepository;
 import com.intellect.bugpilot.service.UsersService;
+import com.intellect.bugpilot.service.dto.AccountInformationDTO;
+import com.intellect.bugpilot.service.dto.RoleEnum;
 import com.intellect.bugpilot.service.dto.RolesDTO;
 import com.intellect.bugpilot.service.dto.UserStatusEnum;
 import com.intellect.bugpilot.service.dto.UsersRequestDTO;
@@ -28,6 +35,15 @@ public class UsersServiceImpl implements UsersService {
 	
 	@Autowired
 	private UsersRepository usersRepository;
+	
+	@Autowired
+	private LoginServiceImpl loginServiceImpl;
+	
+	@Autowired
+	private LoginRepository loginRepository;
+	
+	@Autowired
+	private RolesRepository rolesRepository;
 
 	@Override
 	public UsersRequestDTO createUser(UsersRequestDTO usersRequestDTO) {
@@ -48,6 +64,16 @@ public class UsersServiceImpl implements UsersService {
 							.status(usersRequestDTO.getStatus())
 							.build();
 				users = usersRepository.save(users);
+				
+				AccountInformationDTO accountInformationDTO = new AccountInformationDTO.AccountInformationDTOBuilder()
+									.id(users.getUserId())
+									.userName(usersRequestDTO.getEmail())
+									.userId(users.getUserId())
+									.build();
+				if(usersRequestDTO.getUserId() == null) {
+					loginServiceImpl.createLogin(accountInformationDTO);
+				}
+				
 				
 				usersRequestDTO = new UsersRequestDTO.UsersRequestDTOBuilder()
 						.userId(users.getUserId())
@@ -85,12 +111,16 @@ public class UsersServiceImpl implements UsersService {
 		List<Users> usersList = usersRepository.findAll();
 		if(!CollectionUtils.isEmpty(usersList)) {
 			usersList.forEach(users -> {
+				RolesDTO rolesDTO = rolesServiceImpl.findOne(users.getRoles().getRoleId());
+				AccountInformation accountInformation = loginRepository.findByUsers(users);
 				UsersRequestDTO usersRequestDTO = new UsersRequestDTO.UsersRequestDTOBuilder()
 						.userId(users.getUserId())
 						.firstName(users.getFirstName())
 						.lastName(users.getLastName())
 						.gender(users.getGender())
 						.roleId(users.getRoles().getRoleId())
+						.roleName(rolesDTO.getRoleName().toString())
+						.email(accountInformation.getUserName())
 						.status(users.getStatus())
 						.build();
 				usersRequestDTOlist.add(usersRequestDTO);
@@ -120,6 +150,27 @@ public class UsersServiceImpl implements UsersService {
 			usersRepository.save(users);
 		}
 		
+	}
+
+	@Override
+	public Map<String, Long> getAllActiveUsers() {
+		return usersRepository.findAll().stream()
+				.filter(users -> UserStatusEnum.ACTIVE.equals(users.getStatus()))
+				.filter(user -> {
+		            RoleEnum role = user.getRoles().getRoleName();
+		            return role != RoleEnum.TEAM_LEAD && role != RoleEnum.ADMIN && role != RoleEnum.TESTER;
+		        })
+				.collect(Collectors.toMap(user -> user.getFirstName() + " " + user.getLastName(), Users::getUserId));
+	}
+
+	@Override
+	public Map<String, Long> getAllActiveTeamLeadUsers() {
+		Roles roles = rolesRepository.findByRoleNameAndStatus(RoleEnum.TEAM_LEAD, true);
+		if(!ObjectUtils.isEmpty(roles)) {
+			return  usersRepository.findByRolesAndStatus(roles, UserStatusEnum.ACTIVE).stream()
+					.collect(Collectors.toMap(user -> user.getFirstName() + " " + user.getLastName(), Users::getUserId));
+		}
+		return null;
 	}
 
 }

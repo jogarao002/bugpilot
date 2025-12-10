@@ -1,7 +1,6 @@
 package com.intellect.bugpilot.service.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.intellect.bugpilot.audit.Auditable;
 
@@ -17,8 +16,6 @@ public class IssueCommentsDTO extends Auditable implements Serializable {
 
 	private String commonetText;
 
-	private Date createdAt;
-
 	public IssueCommentsDTO() {
 	}
 
@@ -27,7 +24,6 @@ public class IssueCommentsDTO extends Auditable implements Serializable {
 		this.issues = builder.issues;
 		this.users = builder.users;
 		this.commonetText = builder.commonetText;
-		this.createdAt = builder.createdAt;
 	}
 
 	public static class IssueCommentsDTOBuilder extends Auditable implements Serializable {
@@ -38,7 +34,6 @@ public class IssueCommentsDTO extends Auditable implements Serializable {
 		private IssuesDTO issues;
 		private UsersDTO users;
 		private String commonetText;
-		private Date createdAt;
 
 		public IssueCommentsDTOBuilder commentId(Long commentId) {
 			this.commentId = commentId;
@@ -57,11 +52,6 @@ public class IssueCommentsDTO extends Auditable implements Serializable {
 
 		public IssueCommentsDTOBuilder commonetText(String commonetText) {
 			this.commonetText = commonetText;
-			return this;
-		}
-
-		public IssueCommentsDTOBuilder createdAt(Date createdAt) {
-			this.createdAt = createdAt;
 			return this;
 		}
 
@@ -86,13 +76,11 @@ public class IssueCommentsDTO extends Auditable implements Serializable {
 		return commonetText;
 	}
 
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
 	@Override
 	public String toString() {
 		return "IssueCommentsDTO [commentId=" + commentId + ", issues=" + issues + ", users=" + users
-				+ ", commonetText=" + commonetText + ", createdAt=" + createdAt + "]";
+				+ ", commonetText=" + commonetText + "]";
 	}
+
+	
 }

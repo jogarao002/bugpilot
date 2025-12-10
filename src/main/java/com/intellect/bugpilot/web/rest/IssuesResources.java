@@ -1,7 +1,6 @@
 package com.intellect.bugpilot.web.rest;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.intellect.bugpilot.service.IssuesService;
 import com.intellect.bugpilot.service.dto.IssuesRequestDTO;
+import com.intellect.bugpilot.service.dto.IssuesResponseDTO;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -30,14 +30,14 @@ public class IssuesResources {
 	private IssuesService issuesService;
 
 	@PostMapping("/create_issue")
-	public ResponseEntity<IssuesRequestDTO> createRole(@Valid @RequestBody IssuesRequestDTO issuesRequestDTO) {
+	public ResponseEntity<IssuesRequestDTO> createIssue(@Valid @RequestBody IssuesRequestDTO issuesRequestDTO) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(issuesService.createIssue(issuesRequestDTO));
 	}
 
 	@GetMapping("/get_all")
 	public ResponseEntity<?> getAllIssues() {
-		List<IssuesRequestDTO> issues = issuesService.getAllIssues();
-		if (issues.isEmpty()) {
+		IssuesResponseDTO issues = issuesService.getAllIssues();
+		if (issues == null) {
 			Map<String, String> response = new HashMap<>();
 	        response.put("message", "There are no issues");
 	        return ResponseEntity.ok(response);
@@ -66,5 +66,20 @@ public class IssuesResources {
 	public ResponseEntity<String> deleteIssue(@NotNull @PathVariable Long issueId) {
 		issuesService.deleteIssue(issueId);
 		return ResponseEntity.ok("Issue with ID " + issueId + " has been successfully deleted.");
+	}
+	
+	@GetMapping("/get_issues_by_user_id/{raisedBy}")
+	public ResponseEntity<IssuesResponseDTO> getIssueByRaisedById(@NotNull @PathVariable Long raisedBy) {
+		return ResponseEntity.ok(issuesService.getIssueByRaisedById(raisedBy));
+	}
+	
+	@GetMapping("/get_issues_by_raised_to/{raisedTo}")
+	public ResponseEntity<IssuesResponseDTO> getIssueByRaisedTo(@NotNull @PathVariable Long raisedTo) {
+		return ResponseEntity.ok(issuesService.getIssueByRaisedTo(raisedTo));
+	}
+	
+	@GetMapping("/get_issues_by_assigned_to/{assignedTo}")
+	public ResponseEntity<IssuesResponseDTO> getIssueByAssignedTo(@NotNull @PathVariable Long assignedTo) {
+		return ResponseEntity.ok(issuesService.getIssueByAssignedTo(assignedTo));
 	}
 }

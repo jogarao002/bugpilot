@@ -22,6 +22,8 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 	@NotNull
 	private Long moduleId;
 	
+	private Long subModuleId;
+	
 	@NotBlank
 	private String imageProof; // By using base64
 
@@ -30,6 +32,9 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 
 	@NotNull
 	private Long raisedBy;
+	
+	@NotNull
+	private Long raisedTo;
 
 	
 	private Long assignedTo;
@@ -40,6 +45,22 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 	private PriorityStatusEnum priority;
 
 	private IssueStatusEnum status;
+	
+	private String projectName;
+	
+	private String moduleName;
+	
+	private String subModuleName;
+	
+	private String raisedByName;
+	
+	private String assignedToName;
+	
+	private String assignedByName;
+	
+	private String comment;
+	
+	private Long userId;
 
 	public IssuesRequestDTO() {
 	}
@@ -52,10 +73,20 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 		this.description = builder.description;
 		this.imageProof= builder.imageProof;
 		this.raisedBy = builder.raisedBy;
+		this.raisedTo = builder.raisedTo;
+		this.subModuleId= builder.subModuleId;
 		this.assignedTo = builder.assignedTo;
 		this.assignedBy = builder.assignedBy;
 		this.priority = builder.priority;
 		this.status = builder.status;
+		this.projectName =builder.projectName;
+		this.moduleName = builder.moduleName;
+		this.subModuleName= builder.subModuleName;
+		this.raisedByName= builder.raisedByName;
+		this.assignedToName = builder.assignedToName;
+		this.assignedByName= builder.assignedByName;
+		this.comment = builder.comment;
+		this.userId = builder.userId;
 	}
 
 	public static class IssuesRequestDTOBuilder extends Auditable implements Serializable {
@@ -72,6 +103,8 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 
 		@NotNull
 		private Long moduleId;
+		
+		private Long subModuleId;
 
 		@NotNull
 		private String description;
@@ -81,6 +114,9 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 
 		@NotNull
 		private Long raisedBy;
+		
+		@NotNull
+		private Long raisedTo;
 
 		@NotNull
 		private Long assignedTo;
@@ -91,6 +127,24 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 		private PriorityStatusEnum priority;
 
 		private IssueStatusEnum status;
+		
+		private String projectName;
+		
+		private String moduleName;
+		
+		private String subModuleName;
+		
+		private String raisedByName;
+		
+		private String assignedToName;
+		
+		private String assignedByName;
+		
+		@NotBlank
+		private String comment;
+		
+		@NotNull
+		private Long userId;
 
 		public IssuesRequestDTOBuilder issueId(Long issueId) {
 			this.issueId = issueId;
@@ -111,6 +165,11 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 			this.moduleId = moduleId;
 			return this;
 		}
+		
+		public IssuesRequestDTOBuilder subModuleId(Long subModuleId) {
+			this.subModuleId =subModuleId;
+			return this;
+		}
 
 		public IssuesRequestDTOBuilder description(@NotNull String description) {
 			this.description = description;
@@ -124,6 +183,11 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 
 		public IssuesRequestDTOBuilder raisedBy(@NotNull Long raisedBy) {
 			this.raisedBy = raisedBy;
+			return this;
+		}
+		
+		public IssuesRequestDTOBuilder raisedTo(@NotNull Long raisedTo) {
+			this.raisedTo = raisedTo;
 			return this;
 		}
 
@@ -146,6 +210,46 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 			this.status = status;
 			return this;
 		}
+		
+		public IssuesRequestDTOBuilder projectName(String projectName) {
+		    this.projectName = projectName;
+		    return this;
+		}
+
+		public IssuesRequestDTOBuilder moduleName(String moduleName) {
+		    this.moduleName = moduleName;
+		    return this;
+		}
+
+		public IssuesRequestDTOBuilder subModuleName(String subModuleName) {
+		    this.subModuleName = subModuleName;
+		    return this;
+		}
+
+		public IssuesRequestDTOBuilder raisedByName(String raisedByName) {
+		    this.raisedByName = raisedByName;
+		    return this;
+		}
+
+		public IssuesRequestDTOBuilder assignedToName(String assignedToName) {
+		    this.assignedToName = assignedToName;
+		    return this;
+		}
+
+		public IssuesRequestDTOBuilder assignedByName(String assignedByName) {
+		    this.assignedByName = assignedByName;
+		    return this;
+		}
+		
+		public IssuesRequestDTOBuilder comment(String comment) {
+		    this.comment = comment;
+		    return this;
+		}
+		
+		public IssuesRequestDTOBuilder userId(Long userId) {
+		    this.userId = userId;
+		    return this;
+		}
 
 		public IssuesRequestDTO build() {
 			return new IssuesRequestDTO(this);
@@ -166,6 +270,10 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 
 	public Long getModuleId() {
 		return moduleId;
+	}
+
+	public Long getSubModuleId() {
+		return subModuleId;
 	}
 
 	public String getDescription() {
@@ -192,20 +300,55 @@ public class IssuesRequestDTO extends Auditable implements Serializable {
 		return status;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getImageProof() {
 		return imageProof;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	public String getSubModuleName() {
+		return subModuleName;
+	}
+
+	public String getRaisedByName() {
+		return raisedByName;
+	}
+
+	public String getAssignedToName() {
+		return assignedToName;
+	}
+
+	public String getAssignedByName() {
+		return assignedByName;
+	}
+
+	public Long getRaisedTo() {
+		return raisedTo;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public Long getUserId() {
+		return userId;
 	}
 
 	@Override
 	public String toString() {
 		return "IssuesRequestDTO [issueId=" + issueId + ", issueName=" + issueName + ", projectId=" + projectId
-				+ ", moduleId=" + moduleId + ", imageProof=" + imageProof + ", description=" + description
-				+ ", raisedBy=" + raisedBy + ", assignedTo=" + assignedTo + ", assignedBy=" + assignedBy + ", priority="
-				+ priority + ", status=" + status + "]";
+				+ ", moduleId=" + moduleId + ", subModuleId=" + subModuleId + ", imageProof=" + imageProof
+				+ ", description=" + description + ", raisedBy=" + raisedBy + ", raisedTo=" + raisedTo + ", assignedTo="
+				+ assignedTo + ", assignedBy=" + assignedBy + ", priority=" + priority + ", status=" + status
+				+ ", projectName=" + projectName + ", moduleName=" + moduleName + ", subModuleName=" + subModuleName
+				+ ", raisedByName=" + raisedByName + ", assignedToName=" + assignedToName + ", assignedByName="
+				+ assignedByName + ", comment=" + comment + ", userId=" + userId + "]";
 	}
-
+	
 }

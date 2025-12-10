@@ -31,13 +31,13 @@ public class SubModulesResource {
 	
 	
 	@PostMapping("/create_sub_module")
-	public ResponseEntity<SubModulesRequestDTO> createRole(@Valid @RequestBody SubModulesRequestDTO subModulesRequestDTO){
+	public ResponseEntity<SubModulesRequestDTO> createSubModule(@Valid @RequestBody SubModulesRequestDTO subModulesRequestDTO){
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(subModulesService.createsubModule(subModulesRequestDTO));
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<SubModulesRequestDTO> updateUser(@Valid @RequestBody SubModulesRequestDTO subModulesRequestDTO) {
+	public ResponseEntity<SubModulesRequestDTO> updateSubModule(@Valid @RequestBody SubModulesRequestDTO subModulesRequestDTO) {
 	    SubModulesRequestDTO updatedUser = subModulesService.createsubModule(subModulesRequestDTO); 
 	    if (updatedUser != null) {
 	        return ResponseEntity.ok().body(updatedUser);
@@ -53,7 +53,7 @@ public class SubModulesResource {
 	}
 
 	@GetMapping("/get_all")
-	public ResponseEntity<?> getAllUsers() {
+	public ResponseEntity<?> getAllSubModules() {
 	    List<SubModulesRequestDTO> users = subModulesService.findAll();
 	    if (users.isEmpty()) {
 	    	Map<String, String> response = new HashMap<>();
@@ -65,9 +65,16 @@ public class SubModulesResource {
 
 	
 	@DeleteMapping("/delete/{subModuleId}")
-	public ResponseEntity<String> deleteUser(@NotNull @PathVariable Long subModuleId) {
+	public ResponseEntity<Void> deleteUser(@NotNull @PathVariable Long subModuleId) {
 	    subModulesService.delete(subModuleId); 
-	    return ResponseEntity.ok("User with ID " + subModuleId + " has been successfully deleted.");
+	    return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/get_all_sub_modules_by_module_id/{moduleId}")
+	public ResponseEntity<Map<String, Long>> getAllSubModulesByModuleId(@NotNull @PathVariable Long moduleId) {
+		return ResponseEntity.ok(subModulesService.getAllSubModulesByModuleId(moduleId));
+		
+	    
 	}
 
 }

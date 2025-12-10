@@ -2,6 +2,8 @@ package com.intellect.bugpilot.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class ProjectsServiceImpl implements ProjectService {
 	private ProjectsRepository projectsRepository;
 
 	@Override
-	public ProjectsDTO createUser(ProjectsDTO projectsDTO) {
+	public ProjectsDTO createProject(ProjectsDTO projectsDTO) {
 		
 		Projects projects = new Projects.ProjectsBuilder()
 					.projectId((projectsDTO.getProjectId() != null) ? projectsDTO.getProjectId() : null)
@@ -77,6 +79,13 @@ public class ProjectsServiceImpl implements ProjectService {
 				.status(ProjectStatusEnum.ONHOLD)
 				.build();
 		projectsRepository.save(projects);
+	}
+
+	@Override
+	public Map<String, Long> getAllActiveProjects() {
+		return projectsRepository.findAll().stream()
+				.filter(project -> ProjectStatusEnum.COMPLETED.equals(project.getStatus()))
+				.collect(Collectors.toMap(Projects::getProjectName, Projects::getProjectId));
 	}
 
 }

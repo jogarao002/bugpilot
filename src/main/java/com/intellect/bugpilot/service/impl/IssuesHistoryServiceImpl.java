@@ -1,7 +1,6 @@
 package com.intellect.bugpilot.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,15 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.intellect.bugpilot.domain.IssueComments;
 import com.intellect.bugpilot.domain.Issues;
 import com.intellect.bugpilot.domain.IssuesHistory;
 import com.intellect.bugpilot.domain.Users;
 import com.intellect.bugpilot.exception.ResourceNotFoundException;
+import com.intellect.bugpilot.repository.IssueCommentsRespository;
 import com.intellect.bugpilot.repository.IssuesHistoryRepository;
 import com.intellect.bugpilot.service.IssuesHistoryService;
+import com.intellect.bugpilot.service.dto.IssueHistoryResponseDTO;
 import com.intellect.bugpilot.service.dto.IssuesHistoryRequestDTO;
-import com.intellect.bugpilot.service.dto.IssuesRequestDTO;
-import com.intellect.bugpilot.service.dto.UsersRequestDTO;
 
 @Service
 public class IssuesHistoryServiceImpl implements IssuesHistoryService {
@@ -27,36 +27,22 @@ public class IssuesHistoryServiceImpl implements IssuesHistoryService {
 	private IssuesHistoryRepository issuesHistoryRepository;
 	
 	@Autowired
-	private issuesServiceImpl issuesServiceImpl;
-	
-	@Autowired
-	private UsersServiceImpl usersServiceImpl;
+	private IssueCommentsRespository issueCommentsRespository;
 
 	@Override
 	public IssuesHistoryRequestDTO createIssueHistory(IssuesHistoryRequestDTO issuesHistoryRequestDTO) {
-		IssuesRequestDTO issuesRequestDTO = issuesServiceImpl.getIssueById(issuesHistoryRequestDTO.getIssueId());
 		Issues issues = new Issues.IssuesBuilder()
-									.issueId(issuesRequestDTO.getIssueId())
+									.issueId(issuesHistoryRequestDTO.getIssueId())
 									.build();
-		UsersRequestDTO usersRequestDTO = usersServiceImpl.findOne(issuesHistoryRequestDTO.getUserId());
 		Users users = new Users.UsersBuilder()
-								.userId(usersRequestDTO.getUserId())
+								.userId(issuesHistoryRequestDTO.getUserId())
 								.build();
 		
 		IssuesHistory issuesHistory = new IssuesHistory.IssuesHistoryBuilder()
 														.historyId(issuesHistoryRequestDTO.getHistoryId() != null ? issuesHistoryRequestDTO.getHistoryId() : null)
 														.issues(issues)
 														.users(users)
-														.oldStatus(issuesRequestDTO.getStatus() != null
-														        ? issuesRequestDTO.getStatus()
-														                : issuesHistoryRequestDTO.getOldStatus())
-														.newStatus(issuesHistoryRequestDTO.getNewStatus())
-														.remarks(issuesHistoryRequestDTO.getRemarks())
-														.changedAt(Date.from(
-																LocalDateTime.now()
-																.atZone(ZoneId.systemDefault())
-																.toInstant()
-																))
+														.oldStatus(issuesHistoryRequestDTO.getOldStatus())
 														.build();
 		
 		issuesHistory= issuesHistoryRepository.save(issuesHistory);
@@ -66,9 +52,6 @@ public class IssuesHistoryServiceImpl implements IssuesHistoryService {
 											.issueId(issuesHistory.getIssues().getIssueId())
 											.userId(issuesHistory.getUsers().getUserId())
 											.oldStatus(issuesHistory.getOldStatus())
-											.newStatus(issuesHistory.getNewStatus())
-											.remarks(issuesHistory.getRemarks())
-											.changedAt(issuesHistory.getChangedAt())
 											.build();
 	}
 
@@ -81,9 +64,6 @@ public class IssuesHistoryServiceImpl implements IssuesHistoryService {
 				.issueId(issuesHistory.getIssues().getIssueId())
 				.userId(issuesHistory.getUsers().getUserId())
 				.oldStatus(issuesHistory.getOldStatus())
-				.newStatus(issuesHistory.getNewStatus())
-				.remarks(issuesHistory.getRemarks())
-				.changedAt(issuesHistory.getChangedAt())
 				.build();
 	}
 
@@ -98,15 +78,56 @@ public class IssuesHistoryServiceImpl implements IssuesHistoryService {
 																					.issueId(issuesHistories.getIssues().getIssueId())
 																					.userId(issuesHistories.getUsers().getUserId())
 																					.oldStatus(issuesHistories.getOldStatus())
-																					.newStatus(issuesHistories.getNewStatus())
-																					.remarks(issuesHistories.getRemarks())
-																					.changedAt(issuesHistories.getChangedAt())
 																					.build();
 				issuesHistoryRequestDTOList.add(issuesHistoryRequestDTO);
 			});
 		}
 		return issuesHistoryRequestDTOList;
 	}
+
+	@Override
+	public List<IssueHistoryResponseDTO> getHistoryByIssueId(Long issueId) {
+
+	    Issues issues = new Issues.IssuesBuilder()
+	            .issueId(issueId)
+	            .build();
+
+	    List<IssuesHistory> issuesHistories = issuesHistoryRepository.findByIssues(issues);
+	    List<IssueComments> issueComments = issueCommentsRespository.findByIssues(issues);
+
+	    List<IssueHistoryResponseDTO> historyList = new ArrayList<>();
+
+	    for (IssuesHistory history : issuesHistories) {
+
+	        IssueComments matchingComment = issueComments.stream()
+	                .filter(c -> isSameSecond(history.getCreatedAt(), c.getCreatedAt()))
+	                .findFirst()
+	                .orElse(null);
+
+	        String commentText = matchingComment != null ? matchingComment.getCommentText() : null;
+
+	        IssueHistoryResponseDTO dto = new IssueHistoryResponseDTO.IssueHistoryResponseDTOBuilder()
+	                .issueName(history.getIssues().getIssueName())
+	                .createdDate(history.getCreatedAt())
+	                .userName(history.getUsers().getFirstName() + " " + history.getUsers().getLastName())
+	                .oldStatus(history.getOldStatus())
+	                .commentText(commentText)
+	                .build();
+
+	        historyList.add(dto);
+	    }
+
+
+	    return historyList;
+	}
+
+	
+	private boolean isSameSecond(Date d1, Date d2) {
+	    return d1.toInstant().truncatedTo(ChronoUnit.SECONDS)
+	            .equals(d2.toInstant().truncatedTo(ChronoUnit.SECONDS));
+	}
+
+
 
 
 }

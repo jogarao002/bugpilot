@@ -40,6 +40,10 @@ public class Issues extends Auditable implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "module_id", referencedColumnName = "moduleId")
 	private Modules modules;
+	
+	@ManyToOne
+    @JoinColumn(name = "submodule_id", referencedColumnName = "subModuleId", nullable = true)
+	private SubModules subModules;
 
 	@Lob
 	@Column(columnDefinition = "TEXT")
@@ -48,6 +52,11 @@ public class Issues extends Auditable implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "raised_by", referencedColumnName = "userId")
 	private Users raisedBy;
+	
+	@ManyToOne
+	@JoinColumn(name = "raised_to", referencedColumnName = "userId")
+	private Users raisedTo;
+	
 
 	@ManyToOne
 	@JoinColumn(name = "assiged_to", referencedColumnName = "userId")
@@ -71,8 +80,10 @@ public class Issues extends Auditable implements Serializable {
 		this.issueName = builder.issueName;
 		this.projects = builder.projects;
 		this.modules = builder.modules;
+		this.subModules = builder.subModules;
 		this.description = builder.description;
 		this.raisedBy = builder.raisedBy;
+		this.raisedTo = builder.raisedTo;
 		this.assignedTo = builder.assignedTo;
 		this.assignedBy = builder.assignedBy;
 		this.priority = builder.priority;
@@ -91,10 +102,14 @@ public class Issues extends Auditable implements Serializable {
 		private Projects projects;
 
 		private Modules modules;
+		
+		private SubModules subModules;
 
 		private String description;
 
 		private Users raisedBy;
+		
+		private Users raisedTo;
 
 		private Users assignedTo;
 
@@ -123,6 +138,11 @@ public class Issues extends Auditable implements Serializable {
 			this.modules = modules;
 			return this;
 		}
+		
+		public IssuesBuilder subModules(SubModules subModules) {
+			this.subModules = subModules;
+			return this;
+		}
 
 		public IssuesBuilder description(String description) {
 			this.description = description;
@@ -134,6 +154,11 @@ public class Issues extends Auditable implements Serializable {
 			return this;
 		}
 
+		public IssuesBuilder raisedTo(Users raisedTo) {
+			this.raisedTo = raisedTo;
+			return this;
+		}
+		
 		public IssuesBuilder assignedTo(Users assignedTo) {
 			this.assignedTo = assignedTo;
 			return this;
@@ -200,11 +225,20 @@ public class Issues extends Auditable implements Serializable {
 		return status;
 	}
 
+	public SubModules getSubModules() {
+		return subModules;
+	}
+
+	public Users getRaisedTo() {
+		return raisedTo;
+	}
+
 	@Override
 	public String toString() {
 		return "Issues [issueId=" + issueId + ", issueName=" + issueName + ", projects=" + projects + ", modules="
-				+ modules + ", description=" + description + ", raisedBy=" + raisedBy + ", assignedTo=" + assignedTo
-				+ ", assignedBy=" + assignedBy + ", priority=" + priority + ", status=" + status + "]";
+				+ modules + ", subModules=" + subModules + ", description=" + description + ", raisedBy=" + raisedBy
+				+ ", raisedTo=" + raisedTo + ", assignedTo=" + assignedTo + ", assignedBy=" + assignedBy + ", priority="
+				+ priority + ", status=" + status + "]";
 	}
 
 }
